@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SSLC Percentage Calculator 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        /* Glassmorphism Logic */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .subject-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .grade-select {
+            background: #1e293b;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            appearance: none; /* Removes default mobile styling */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='C19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.7rem center;
+            background-size: 1rem;
+        }
+        /* Button Glow */
+        .btn-calculate {
+            background: linear-gradient(45deg, #3b82f6, #10b981);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-calculate:active { transform: scale(0.95); }
+
+        /* Animation for Result */
+        @keyframes glowPulse {
+            0%, 100% { border-color: rgba(16, 185, 129, 0.3); box-shadow: 0 0 10px rgba(16, 185, 129, 0.1); }
+            50% { border-color: rgba(56, 189, 248, 0.6); box-shadow: 0 0 25px rgba(56, 189, 248, 0.2); }
+        }
+        .result-card {
+            animation: glowPulse 3s infinite ease-in-out;
+            border: 2px solid rgba(16, 185, 129, 0.3);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="w-full max-w-6xl mx-auto p-4 md:p-8 lg:p-12">
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 mb-3">
+                SSLC Result Pro
+            </h1>
+            <p class="text-slate-400 text-sm md:text-base font-medium">Quick & Accurate Percentage Calculator</p>
+        </header>
+
+        <div class="flex flex-col lg:flex-row gap-6 lg:gap-10">
+            
+            <div class="w-full lg:w-2/3 glass rounded-3xl p-5 md:p-10 shadow-2xl">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-blue-400 rounded-full animate-ping"></span>
+                    Enter Your Grades
+                </h2>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-5" id="subject-grid">
+                    </div>
+
+                <button onclick="calculate()" class="btn-calculate w-full py-4 md:py-5 rounded-2xl text-lg md:text-xl font-black uppercase text-white mt-8 tracking-wider">
+                    🚀 Calculate Now
+                </button>
+            </div>
+
+            <div class="w-full lg:w-1/3">
+                <div class="result-card glass rounded-3xl p-6 md:p-8 sticky top-6 text-center">
+                    <h3 class="text-xs uppercase tracking-[0.2em] font-bold mb-4 text-slate-500">Your Score</h3>
+                    
+                    <div class="py-4">
+                        <span id="percent-display" class="text-6xl md:text-7xl font-black text-emerald-400">0%</span>
+                    </div>
+
+                    <div class="space-y-4 pt-6 border-t border-white/10 mt-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400 text-sm">Total Grade Points</span>
+                            <span id="tgp-display" class="text-xl font-bold">0</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400 text-sm">Status</span>
+                            <span id="status-display" class="text-emerald-400 font-bold italic">Ready</span>
+                        </div>
+                    </div>
+
+                    <button onclick="window.print()" class="mt-8 w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition text-[10px] font-bold uppercase tracking-[0.2em]">
+                        Download Report
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="text-center mt-12 mb-8 text-slate-500 text-xs">
+            © 2026 | Developed by Minhaj ❤️
+        </footer>
+    </div>
+
+    <audio id="click-sound">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const subjects = [
+            "First Language I", "First Language II", "English", "Hindi", 
+            "Social Science", "Physics", "Chemistry", "Biology", 
+            "Mathematics", "I.T"
+        ];
+
+        const gradePoints = { "A+": 9, "A": 8, "B+": 7, "B": 6, "C+": 5, "C": 4, "D+": 3, "D": 2, "E": 1 };
+
+        const grid = document.getElementById('subject-grid');
+
+        // Render Subject Selection Cards
+        subjects.forEach(sub => {
+            const card = document.createElement('div');
+            card.className = "subject-card p-3 md:p-4 rounded-xl flex items-center justify-between gap-4";
+            card.innerHTML = `
+                <label class="text-[11px] md:text-xs font-bold text-slate-300 uppercase truncate">${sub}</label>
+                <select class="grade-select rounded-lg p-2 min-w-[90px] text-sm outline-none cursor-pointer font-bold transition-all hover:border-blue-400">
+                    <option value="0">Grade</option>
+                    ${Object.keys(gradePoints).map(g => `<option value="${gradePoints[g]}">${g}</option>`).join('')}
+                </select>
+            `;
+            grid.appendChild(card);
+        });
+
+        function calculate() {
+            const selects = document.querySelectorAll('.grade-select');
+            let tgp = 0;
+            let filled = true;
+
+            selects.forEach(s => {
+                if(s.value === "0") filled = false;
+                tgp += parseInt(s.value);
+            });
+
+            if(!filled) {
+                alert("Please select grades for all 10 subjects!");
+                return;
+            }
+
+            // Sound
+            const sound = document.getElementById('click-sound');
+            sound.currentTime = 0;
+            sound.play();
+
+            // Logic
+            const percentage = (tgp * 1.1111).toFixed(2);
+            
+            // UI Updates
+            document.getElementById('tgp-display').innerText = tgp;
+            document.getElementById('percent-display').innerText = percentage + '%';
+
+            const status = document.getElementById('status-display');
+            if (tgp >= 85) status.innerText = "Outstanding! 🌟";
+            else if (tgp >= 70) status.innerText = "Excellent! ✨";
+            else status.innerText = "Qualified! ✅";
+
+            // Confetti
+            confetti({
+                particleCount: 120,
+                spread: 60,
+                origin: { y: 0.7 }
+            });
+
+            // Smooth scroll for mobile
+            if(window.innerWidth < 1024) {
+                document.querySelector('.result-card').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+</html>
